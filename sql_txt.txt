@@ -1,0 +1,181 @@
+
+P3
+select 
+od.order_id as order_id,
+p.name as product,
+s.name as supplier,
+concat(s.contact, ', ', s.phone, ',', c.address, ', ', c.city, ', ', c.postal_code, ',', c.country) as supplier_details,
+concat(ct.name, ', ', ct.description) as category,
+od.quantity,
+p.unit,
+p.price,
+o.date as order_date,
+c.name as customer_name,
+c.contact as contact_name,
+concat(c.address,',', c.city,',', c.postal_code, ',', c.country) as delivery_address,
+concat(e.first_name, ' ', e.last_name) as employee,
+concat(sh.name, ', ', sh.phone) as shipper 
+
+
+from order_details od
+inner join orders o on od.order_id = o.id
+inner join shippers sh on o.shipper_id = sh.id
+inner join products p on od.product_id = p.id
+inner join categories ct on p.category_id = ct.id
+inner join suppliers s on p.supplier_id = s.id
+inner join customers c on o.customer_id = c.id
+inner join employees e on o.employee_id = e.employee_id
+
+
+
+p4_1
+
+SELECT COUNT(*) AS total_rows
+FROM (
+select 
+od.order_id as order_id,
+p.name as product,
+s.name as supplier,
+concat(s.contact, ', ', s.phone, ',', c.address, ', ', c.city, ', ', c.postal_code, ',', c.country) as supplier_details,
+concat(ct.name, ', ', ct.description) as category,
+od.quantity,
+p.unit,
+p.price,
+o.date as order_date,
+c.name as customer_name,
+c.contact as contact_name,
+concat(c.address,',', c.city,',', c.postal_code, ',', c.country) as delivery_address,
+concat(e.first_name, ' ', e.last_name) as employee,
+concat(sh.name, ', ', sh.phone) as shipper 
+
+
+from order_details od
+inner join orders o on od.order_id = o.id
+inner join shippers sh on o.shipper_id = sh.id
+inner join products p on od.product_id = p.id
+inner join categories ct on p.category_id = ct.id
+inner join suppliers s on p.supplier_id = s.id
+inner join customers c on o.customer_id = c.id
+inner join employees e on o.employee_id = e.employee_id
+) as result;
+
+
+p4_2
+
+У відповіді ми отримуємо ту саму кількість рядків, бо усі рядки у результаті будуть лише з таблиці order_details або прив’язані до неї. Якщо категорія не має жодного продукту, або продукт не входив в жодне замовлення, — вона взагалі не потрапляє у результат, бо order_details — це "основна" (батьківська таблиця).
+
+
+SELECT COUNT(*) AS total_rows
+FROM (
+select 
+od.order_id as order_id,
+p.name as product,
+s.name as supplier,
+concat(s.contact, ', ', s.phone, ',', c.address, ', ', c.city, ', ', c.postal_code, ',', c.country) as supplier_details,
+concat(ct.name, ', ', ct.description) as category,
+od.quantity,
+p.unit,
+p.price,
+o.date as order_date,
+c.name as customer_name,
+c.contact as contact_name,
+concat(c.address,',', c.city,',', c.postal_code, ',', c.country) as delivery_address,
+concat(e.first_name, ' ', e.last_name) as employee,
+concat(sh.name, ', ', sh.phone) as shipper 
+
+
+from order_details od
+left join orders o on od.order_id = o.id
+left join shippers sh on o.shipper_id = sh.id
+left join products p on od.product_id = p.id
+left join categories ct on p.category_id = ct.id
+left join suppliers s on p.supplier_id = s.id
+left join customers c on o.customer_id = c.id
+left join employees e on o.employee_id = e.employee_id
+) as result;
+
+
+
+p4_3
+
+select 
+od.order_id as order_id,
+p.name as product,
+s.name as supplier,
+concat(s.contact, ', ', s.phone, ',', c.address, ', ', c.city, ', ', c.postal_code, ',', c.country) as supplier_details,
+concat(ct.name, ', ', ct.description) as category,
+od.quantity,
+p.unit,
+p.price,
+o.date as order_date,
+c.name as customer_name,
+c.contact as contact_name,
+concat(c.address,',', c.city,',', c.postal_code, ',', c.country) as delivery_address,
+concat(e.first_name, ' ', e.last_name) as employee,
+e.employee_id,
+concat(sh.name, ', ', sh.phone) as shipper 
+
+
+from order_details od
+inner join orders o on od.order_id = o.id
+inner join shippers sh on o.shipper_id = sh.id
+inner join products p on od.product_id = p.id
+inner join categories ct on p.category_id = ct.id
+inner join suppliers s on p.supplier_id = s.id
+inner join customers c on o.customer_id = c.id
+inner join employees e on o.employee_id = e.employee_id
+
+where e.employee_id > 3 and e.employee_id <= 10
+
+
+p4_4
+
+SELECT 
+  ct.name AS category_name,
+  COUNT(*) AS total_rows,
+  AVG(od.quantity) AS avg_quantity
+FROM order_details od
+INNER JOIN products p ON od.product_id = p.id
+INNER JOIN categories ct ON p.category_id = ct.id
+GROUP BY ct.name;
+
+
+p4_5;
+
+SELECT 
+  ct.name AS category_name,
+  COUNT(*) AS total_rows,
+  AVG(od.quantity) AS avg_quantity
+FROM order_details od
+INNER JOIN products p ON od.product_id = p.id
+INNER JOIN categories ct ON p.category_id = ct.id
+GROUP BY ct.name
+HAVING avg_quantity > 21;
+
+
+p4_6:
+
+SELECT 
+  ct.name AS category_name,
+  COUNT(*) AS total_rows,
+  AVG(od.quantity) AS avg_quantity
+FROM order_details od
+INNER JOIN products p ON od.product_id = p.id
+INNER JOIN categories ct ON p.category_id = ct.id
+GROUP BY ct.name
+HAVING avg_quantity > 21
+ORDER by avg_quantity DESC;
+
+
+p4_7:
+SELECT 
+  ct.name AS category_name,
+  COUNT(*) AS total_rows,
+  AVG(od.quantity) AS avg_quantity
+FROM order_details od
+INNER JOIN products p ON od.product_id = p.id
+INNER JOIN categories ct ON p.category_id = ct.id
+GROUP BY ct.name
+HAVING avg_quantity > 21
+ORDER by avg_quantity DESC
+LIMIT 1, 4;
